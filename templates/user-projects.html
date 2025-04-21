@@ -1,0 +1,40 @@
+{% include "header.html" %}
+
+                <!-- Page content-->
+                <div class="container-fluid pageHeight bottomPadding position-relative">
+
+                    <a class="btn btn-outline-primary mt-4" href="{{ url_for('add_new_project') }}" role="button">Add Project</a>
+                    <h1 class="mt-2">Projects</h1>
+                    
+                    {% if projects %}
+                    <table class="table table-hover table-bordered mt-4">
+                      <thead>
+                        <tr >
+                          <th width="60%" scope="col">Project Title</th>
+                          <th width="30%" scope="col">Created By</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for project in projects %}
+                        <tr >
+                          <td>
+                              <a href="{{ url_for('show_project', project_id=project.id) }}" class="list-group-item list-group-item-action" aria-current="true">
+                                  {{ project.title }}
+                              </a>
+                          </td>
+                          <td>
+                              <div class="userImage">
+                                <img src="{{ gravatar_url(project.creator.email) }}"/>
+                              </div>
+                              {{ project.creator.name }}
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% else %}
+                    <p>No projects to show.</p>
+                    {% endif %}
+
+
+{% include "footer.html" %}

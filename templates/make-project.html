@@ -1,0 +1,23 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+                <!-- Page content-->
+                <div class="container-fluid pageHeight bottomPadding position-relative">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-sm-6">
+                            <div class="card">
+                              <div class="card-body">
+                                  {% if is_edit: %}
+                                  <h1 class="card-title mt-4">Edit Project</h1>
+                                  {% else: %}
+                                  <h1 class="card-title mt-4">New Project</h1>
+                                  {% endif %}
+                                  {{ ckeditor.load() }} {{ ckeditor.config(name='description') }}
+                                  {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+{% include "footer.html" %}

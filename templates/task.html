@@ -1,0 +1,141 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+                <!-- Page content-->
+                <div class="container-fluid pageHeight bottomPadding position-relative">
+                    <div class="row justify-content-center my-5">
+                        <div class="col-sm-6">
+                            <div class="card">
+                              <div class="card-body">
+                                {% if current_user.id == task.creator.id or current_user.id == task.assignee.id %}
+                                {% if not task.is_complete %}
+                                <a href="{{ url_for('mark_task', task_id=task.id, project_id=project_id) }}" class="btn btn-outline-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                    </svg>
+                                    Completed
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('mark_task', task_id=task.id, project_id=project_id) }}" class="btn btn-outline-secondary">
+                                    Mark Incomplete
+                                </a>
+                                {% endif %}
+                                {% endif %}
+
+                                <div class="d-flex flex-row align-items-center">
+                                    <h1 class="card-title mt-4">{{ task.task_text }}</h1>
+                                    {% if current_user.id == task.creator.id or current_user.id == task.assignee.id %}
+                                    <div class="dropdown">
+                                      <a class="dropdown-toggle" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      </a>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                          {% if current_user.id == task.assignee.id and current_user.id != task.creator.id %}
+                                            <a class="dropdown-item" href="{{ url_for('edit_task_due_date', task_id=task.id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                                </svg>
+                                                Edit Due Date
+                                            </a>
+                                          {% endif %}
+                                          {% if current_user.id == task.creator.id %}
+                                            <a class="dropdown-item" href="{{ url_for('edit_task', task_id=task.id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                                </svg>
+                                                Edit Task
+                                            </a>
+                                            <a class="dropdown-item" href="{{ url_for('delete_task', task_id=task.id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                  <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                                </svg>
+                                                Delete Task
+                                            </a>
+                                          {% endif %}
+                                      </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if task.is_complete: %}
+                                  <p>Status: Completed</p>
+                                {% else %}
+                                  <p>Status: Incomplete</p>
+                                {% endif %}
+                                <p class="card-text">Assignee: {{ task.assignee.name }}</p>
+                                <p class="card-text">Due Date: {{ task.due_date }}</p>
+                                <p class="card-text">Project: <b>{{ task.project.title }}</b></p>
+
+
+
+
+<!--                                {% if current_user.id == task.creator.id or current_user.id == task.assignee.id %}-->
+<!--                                    <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-primary">Edit</a>-->
+<!--                                {% endif %}-->
+<!--                                {% if current_user.id == task.creator.id %}-->
+<!--                                    <a href="{{ url_for('delete_task', task_id=task.id) }}" class="btn btn-danger">Delete</a>-->
+<!--                                {% endif %}-->
+
+                                <div class="mt-4">
+                                    {% if not is_edit_comment: %}
+                                        {{ ckeditor.load() }} {{ ckeditor.config(name='comment_text') }}
+                                        {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+                                    {% endif %}
+                                    <div class="mt-4">
+                                      <!-- Show all the comments on a task -->
+                                      <ul class="list-group">
+                                        {% for comment in task.comments: %}
+                                          <li class="list-group-item">
+                                            <div class="d-flex justify-content-between pt-2">
+                                              <div>
+                                                  <div class="userImage">
+                                                    <img src="{{ gravatar_url(comment.comment_author.email) }}"/>
+                                                  </div>
+                                                  <span>{{ comment.comment_author.name }}</span>
+                                              </div>
+                                              {% if not is_edit_comment: %}
+                                                {% if current_user.id == comment.comment_author.id: %}
+                                                  <div class="dropdown">
+                                                      <a class="dropdown-toggle" role="button" id="dropdownCommentMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      </a>
+                                                      <div class="dropdown-menu" aria-labelledby="dropdownCommentMenuButton">
+                                                        <a class="dropdown-item" href="{{ url_for('edit_comment', comment_id=comment.id, task_id=task.id) }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                                            </svg>
+                                                            Edit Comment
+                                                        </a>
+                                                        <a class="dropdown-item" href="{{ url_for('delete_comment', comment_id=comment.id, task_id=task.id) }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                                            </svg>
+                                                            Delete Comment
+                                                        </a>
+                                                      </div>
+                                                  </div>
+                                                {% endif %}
+                                              {% endif %}
+                                            </div>
+                                            <div class="pt-2">
+                                                {{ comment.comment_text|safe }}
+                                            </div>
+                                            {% if is_edit_comment: %}
+                                              {% if comment_id == comment.id: %}
+                                                {{ ckeditor.load() }} {{ ckeditor.config(name='comment_text') }}
+                                                {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+                                              {% endif %}
+                                            {% endif %}
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+{% include "footer.html" %}

@@ -1,0 +1,27 @@
+{% include "header.html" %}
+
+                <!-- Page content-->
+                <div class="container-fluid homePage pageHeight bottomPadding position-relative">
+                    <div class="row">
+                        {% if current_user.is_authenticated: %}
+                            <h1 class="text-center mt-4">{{ greeting }}, {{ current_user.name }}</h1>
+                            <p class="text-center">{{ weekday }}, {{ dt }}</p>
+                            {% if current_user.email == "guest@email.com": %}
+                                <p class="text-center">Please do not enter any personal information into the the app. Thank you.</p>
+                            {% endif %}
+                        {% else: %}
+                            <div class="px-4 py-5 my-5 text-center">
+                                <h1 class="display-5 fw-bold text-body-emphasis">Stay Organized, Stay Productive</h1>
+                                <div class="col-lg-6 mx-auto">
+                                  <p class="lead mb-4">Transform the way you manage tasks with our intuitive Todo App. Whether it's for work, school, or personal projects, our app helps you organize your day and track progress with ease. Stay focused, accomplish more, and enjoy a clutter-free mind.</p>
+                                  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                    <a class="btn btn-primary btn-lg px-4 gap-3" href="{{ url_for('login') }}" role="button">Log In</a>
+                                    <a class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('login_guest') }}" role="button">Continue as guest</a>
+                                  </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+
+{% include "footer.html" %}
