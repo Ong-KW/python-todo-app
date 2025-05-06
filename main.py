@@ -290,7 +290,7 @@ def get_all_users():
 def home():
 
     # Get the user IP
-    user_ip = request.headers.get('X-Real-IP', request.remote_addr)
+    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
     # print(user_ip)
 
     # Get timezone from user IP
