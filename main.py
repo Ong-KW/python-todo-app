@@ -288,10 +288,11 @@ def get_all_users():
 def home():
 
     x = datetime.now()
+    time = x.time()
 
-    if 0 <= int(x.strftime("%H")) <= 11:
+    if 0 <= time.hour <= 11:
         greeting = "Good morning"
-    elif 12 <= int(x.strftime("%H")) <= 15:
+    elif 12 <= time.hour <= 15:
         greeting = "Good afternoon"
     else:
         greeting = "Good evening"
