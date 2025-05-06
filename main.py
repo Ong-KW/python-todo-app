@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
 
+import requests
 from datetime import date, datetime
+import pytz
 import hashlib
 from urllib.parse import urlencode
 
@@ -287,7 +289,16 @@ def get_all_users():
 @app.route("/")
 def home():
 
-    x = datetime.now()
+    # Get timezone from user IP
+    response = requests.get('https://ipapi.co/json/')
+    result = response.json()
+    user_timezone = result['timezone']
+
+    # Get the timezone object using pytz
+    timezone_obj = pytz.timezone(user_timezone)
+
+    # Get the current time in the user's timezone
+    x = datetime.now(timezone_obj)
     time = x.time()
 
     if 0 <= time.hour <= 11:
