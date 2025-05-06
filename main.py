@@ -289,26 +289,39 @@ def get_all_users():
 @app.route("/")
 def home():
 
+    # Get the user IP
+    user_ip = request.headers.get('X-Real-IP', request.remote_addr)
+    # print(user_ip)
+
     # Get timezone from user IP
-    response = requests.get('https://ipapi.co/json/')
+    response = requests.get(f'https://ipapi.co/{user_ip}/json/')
     result = response.json()
-    user_timezone = result['timezone']
+    # print(result)
 
-    # Get the timezone object using pytz
-    timezone_obj = pytz.timezone(user_timezone)
+    try:
+        # Get the timezone object using pytz
+        timezone_obj = pytz.timezone(result['timezone'])
 
-    # Get the current time in the user's timezone
-    x = datetime.now(timezone_obj)
-    time = x.time()
+    except:
+        greeting = "Hello"
+        dt = ""
 
-    if 0 <= time.hour <= 11:
-        greeting = "Good morning"
-    elif 12 <= time.hour <= 15:
-        greeting = "Good afternoon"
     else:
-        greeting = "Good evening"
+        # Get the current time in the user's timezone
+        x = datetime.now(timezone_obj)
+        day_of_week = x.strftime("%A")
+        mth_and_day = x.strftime("%B %d")
+        dt = f"{day_of_week}, {mth_and_day}"
+        time = x.time()
 
-    return render_template("index.html", gravatar_url=gravatar_url, greeting=greeting, weekday=x.strftime("%A"), dt=x.strftime("%B %d"), current_user=current_user)
+        if 0 <= time.hour <= 11:
+            greeting = "Good morning"
+        elif 12 <= time.hour <= 15:
+            greeting = "Good afternoon"
+        else:
+            greeting = "Good evening"
+
+    return render_template("index.html", gravatar_url=gravatar_url, greeting=greeting, display_date=dt, current_user=current_user)
 
 # Get the current user's projects page
 @app.route("/current-user-projects")
