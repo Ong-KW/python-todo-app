@@ -4,8 +4,8 @@
                 <div class="container-fluid homePage pageHeight bottomPadding position-relative">
                     <div class="row">
                         {% if current_user.is_authenticated: %}
-                            <h1 class="text-center mt-4">{{ greeting }}, {{ current_user.name }}</h1>
-                            <p class="text-center">{{ display_date }}</p>
+                            <h1 class="text-center mt-4"><span id="greeting"></span>, {{ current_user.name }}</h1>
+                            <p class="text-center" ><span id="current-weekday"></span>, <span id="current-date"></span></p>
                             {% if current_user.email == "guest@email.com": %}
                                 <p class="text-center">Please do not enter any personal information into the the app. Thank you.</p>
                             {% endif %}
