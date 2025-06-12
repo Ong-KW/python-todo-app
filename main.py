@@ -125,7 +125,7 @@ def creator_only(f):
 
         index = int(request.path.split("/")[2])
 
-        if request.endpoint == ("add_new_task" or "edit_project" or "delete_project"):
+        if request.endpoint == "add_new_task" or request.endpoint == "edit_project" or request.endpoint == "delete_project":
             project = db.get_or_404(Project, index)
 
             if current_user.id != project.creator_id:
@@ -133,7 +133,7 @@ def creator_only(f):
 
             return f(*args, **kwargs)
 
-        elif request.endpoint == ("edit_task" or "delete task"):
+        elif request.endpoint == "edit_task" or request.endpoint == "delete_task":
             task = db.get_or_404(Task, index)
 
             if current_user.id != task.creator_id:
@@ -288,38 +288,6 @@ def get_all_users():
 # Get the home page
 @app.route("/")
 def home():
-
-    # # Get the user IP
-    # user_ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
-    # # print(user_ip)
-    #
-    # # Get timezone from user IP
-    # response = requests.get(f'https://ipapi.co/{user_ip}/json/')
-    # result = response.json()
-    # # print(result)
-    #
-    # # Check if error occurred
-    # if result['error']:
-    #     greeting = "Hello"
-    #     dt = ""
-    #
-    # else:
-    #     # Get the timezone object using pytz
-    #     timezone_obj = pytz.timezone(result['timezone'])
-    #
-    #     # Get the current time in the user's timezone
-    #     x = datetime.now(timezone_obj)
-    #     day_of_week = x.strftime("%A")
-    #     mth_and_day = x.strftime("%B %d")
-    #     dt = f"{day_of_week}, {mth_and_day}"
-    #     time = x.time()
-    #
-    #     if 0 <= time.hour <= 11:
-    #         greeting = "Good morning"
-    #     elif 12 <= time.hour <= 15:
-    #         greeting = "Good afternoon"
-    #     else:
-    #         greeting = "Good evening"
 
     return render_template("index.html", gravatar_url=gravatar_url, current_user=current_user)
 
@@ -601,12 +569,17 @@ def edit_task(task_id):
     user_emails = [(user.id, user.email) for user in users]
 
     form = CreateTaskForm(
-        task = task_to_edit.task_text,
-        due_date = datetime.strptime(task_to_edit.due_date, "%Y-%m-%d"),
-        assignee = task_to_edit.assignee.id
+        task=task_to_edit.task_text,
+        due_date=datetime.strptime(task_to_edit.due_date, "%Y-%m-%d"),
+        assignee=task_to_edit.assignee.id
     )
-    # Pass the list of tuples into the form
-    form.assignee.choices = user_emails
+
+    if current_user.email == "guest@email.com":
+        # Only allow guest to assign task to guest
+        form.assignee.choices = [(current_user.id, current_user.email)]
+    else:
+        # Pass the list of tuples into the form
+        form.assignee.choices = user_emails
 
     if form.validate_on_submit():
 
